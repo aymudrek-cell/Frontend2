@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقديم طلب تأشيرة | مؤسسة أريج الشام للسياحة والسفر</title>
+<link rel="stylesheet" href="../css/style.css">
+<style>
+  .visa-page{ padding-top:150px; padding-bottom:100px; background:var(--sand-2); }
+  .visa-shell{ display:grid; grid-template-columns: 2fr 1fr; gap:40px; align-items:start; }
+  @media(max-width:920px){ .visa-shell{ grid-template-columns:1fr; } }
+  .visa-form-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:40px; box-shadow:var(--shadow-sm); }
+  .form-step-title{ display:flex; align-items:center; gap:12px; margin:34px 0 20px; }
+  .form-step-title:first-child{ margin-top:0; }
+  .step-num{ width:32px; height:32px; border-radius:50%; background:var(--ink); color:var(--sand); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+  .row-2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media(max-width:600px){ .row-2{ grid-template-columns:1fr; } }
+  .file-drop{ border:1.5px dashed var(--line); border-radius:8px; padding:22px; text-align:center; background:var(--sand-2); cursor:pointer; transition:border-color .2s ease; }
+  .file-drop:hover, .file-drop.dragover{ border-color:var(--gold); }
+  .file-drop input{ display:none; }
+  .file-drop .fname{ font-size:13px; color:var(--teal); margin-top:8px; font-weight:600; }
+  .field-invalid input:not([type=file]), .field-invalid select, .field-invalid textarea{
+    border-color: var(--rust) !important;
+    box-shadow: 0 0 0 3px rgba(156,74,49,.14);
+  }
+  .field-invalid.file-drop{
+    border-color: var(--rust) !important;
+    border-style: solid;
+    background: #FBE7E5;
+  }
+  .field-invalid > label:first-child, .form-field.field-invalid > label{
+    color: var(--rust);
+  }
+  .field-hint{ font-size:12.5px; color:var(--rust); margin-top:6px; display:none; }
+  .field-invalid .field-hint{ display:block; }
+  .qr-box{ background:var(--ink); color:var(--sand); border-radius:10px; padding:26px; text-align:center; }
+  .qr-box img{ background:white; padding:10px; border-radius:8px; margin:16px auto; width:170px; height:170px; }
+  .side-card{ background:var(--white); border:1px solid var(--line); border-radius:12px; padding:26px; margin-bottom:24px; }
+  .side-card h4{ font-size:16px; margin-bottom:12px; }
+  .side-card ul{ font-size:13.5px; color:var(--muted); }
+  .side-card li{ margin-bottom:8px; padding-inline-start:18px; position:relative; }
+  .side-card li::before{ content:"✓"; position:absolute; inset-inline-start:0; color:var(--gold); font-weight:700; }
+  .err-msg{ color:var(--rust); font-size:13px; margin-top:14px; display:none; background:#FBE7E5; padding:12px 16px; border-radius:6px; }
+  .success-box{ display:none; background:#E4F6EA; color:#1E7B3F; padding:24px; border-radius:8px; text-align:center; margin-bottom:24px; }
+  .success-box .ref{ font-family:'Amiri',serif; font-size:22px; font-weight:700; margin-top:8px; }
+  .required-star{ color:var(--rust); }
+</style>
+</head>
+<body>
+
+<header class="site-header scrolled">
+  <div class="container header-inner">
+    <a href="../index.html" class="logo"><span class="stamp-mini">✈</span> أريج الشام</a>
+    <nav class="nav-links">
+      <a href="../index.html" data-i18n="nav_home">الرئيسية</a>
+      <a href="services.html" data-i18n="nav_services">خدماتنا</a>
+      <a href="visa-request.html" data-i18n="nav_visa">التأشيرات</a>
+      <a href="track-request.html" data-i18n="nav_track">تتبع طلبك</a>
+      <a href="contact.html" data-i18n="nav_contact">تواصل معنا</a>
+    </nav>
+    <div class="header-actions">
+      <button class="lang-toggle">English</button>
+      <button class="nav-toggle" aria-label="القائمة">☰</button>
+    </div>
+  </div>
+</header>
+
+<section class="visa-page">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">التأشيرات</span>
+      <h1 style="font-size:34px;">تقديم طلب تأشيرة</h1>
+      <p>عبّئ البيانات التالية بدقة، وسيتواصل معك فريقنا خلال 24 ساعة عمل لتأكيد الطلب.</p>
+    </div>
+
+    <div class="visa-shell">
+      <div class="visa-form-card">
+
+        <div class="success-box" id="successBox">
+          تم إرسال طلبك بنجاح ✅ — يمكنك متابعة حالته باستخدام رقم الطلب:
+          <div class="ref" id="refNumber">—</div>
+        </div>
+
+        <form id="visaForm" novalidate>
+
+          <!-- بيانات العميل -->
+          <div class="form-step-title"><span class="step-num">1</span><h3>بيانات العميل</h3></div>
+          <div class="row-2">
+            <div class="form-field">
+              <label>الاسم الكامل <span class="required-star">*</span></label>
+              <input type="text" name="fullName" required>
+            </div>
+            <div class="form-field">
+              <label>رقم الهاتف <span class="required-star">*</span></label>
+              <input type="tel" name="phone" required>
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="form-field">
+              <label>البريد الإلكتروني <span class="required-star">*</span></label>
+              <input type="email" name="email" required>
+            </div>
+            <div class="form-field">
+              <label>الجنسية <span class="required-star">*</span></label>
+              <input type="text" name="nationality" required>
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="form-field">
+              <label>الدولة المطلوبة <span class="required-star">*</span></label>
+              <input type="text" name="destinationCountry" required>
+            </div>
+            <div class="form-field">
+              <label>نوع الفيزا <span class="required-star">*</span></label>
+              <select name="visaType" required>
+                <option value="">اختر النوع</option>
+                <option value="tourist">سياحية</option>
+                <option value="business">تجارية</option>
+                <option value="umrah">عمرة</option>
+                <option value="hajj">حج</option>
+                <option value="student">طالب</option>
+                <option value="other">أخرى</option>
+              </select>
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="form-field">
+              <label>تاريخ السفر <span class="required-star">*</span></label>
+              <input type="date" name="travelDate" required>
+            </div>
+            <div class="form-field">
+              <label>عدد المسافرين <span class="required-star">*</span></label>
+              <input type="number" name="travelersCount" min="1" value="1" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>ملاحظات</label>
+            <textarea name="notes" rows="3"></textarea>
+          </div>
+
+          <!-- رفع الملفات -->
+          <div class="form-step-title"><span class="step-num">2</span><h3>رفع الملفات</h3></div>
+          <div class="row-2">
+            <div class="form-field">
+              <label>صورة جواز السفر <span class="required-star">*</span></label>
+              <label class="file-drop">
+                <input type="file" name="passportImage" accept="image/*,.pdf" required>
+                📎 اسحب الملف أو اضغط للاختيار
+                <div class="fname"></div>
+              </label>
+            </div>
+            <div class="form-field">
+              <label>صورة شخصية <span class="required-star">*</span></label>
+              <label class="file-drop">
+                <input type="file" name="personalPhoto" accept="image/*" required>
+                📎 اسحب الملف أو اضغط للاختيار
+                <div class="fname"></div>
+              </label>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>مستندات إضافية (اختياري)</label>
+            <label class="file-drop">
+              <input type="file" name="extraDocs" accept="image/*,.pdf" multiple>
+              📎 يمكن اختيار أكثر من ملف
+              <div class="fname"></div>
+            </label>
+          </div>
+
+          <!-- الدفع -->
+          <div class="form-step-title"><span class="step-num">3</span><h3>الدفع</h3></div>
+          <div class="qr-box" style="margin-bottom:24px;">
+            <div>امسح الرمز للدفع عبر شام كاش</div>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data=SHAMCASH-PAY-COMPANY-ACCOUNT" alt="QR شام كاش">
+            <div style="font-size:13px; color:var(--gold-light);">رقم الحساب: 0000-0000-0000</div>
+          </div>
+          <div class="row-2">
+            <div class="form-field">
+              <label>اسم صاحب عملية التحويل <span class="required-star">*</span></label>
+              <input type="text" name="transferSenderName" required>
+            </div>
+            <div class="form-field">
+              <label>رقم عملية التحويل <span class="required-star">*</span></label>
+              <input type="text" name="transferId" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>صورة إثبات التحويل <span class="required-star">*</span></label>
+            <label class="file-drop">
+              <input type="file" name="transferProof" accept="image/*,.pdf" required>
+              📎 اسحب الملف أو اضغط للاختيار
+              <div class="fname"></div>
+            </label>
+          </div>
+
+          <div class="err-msg" id="formError">يرجى تعبئة جميع الحقول المطلوبة المشار إليها بـ (*) قبل إرسال الطلب.</div>
+
+          <button type="submit" class="btn btn-gold" style="width:100%; justify-content:center; margin-top:26px;">
+            إرسال الطلب
+          </button>
+        </form>
+      </div>
+
+      <aside>
+        <div class="side-card">
+          <h4>قبل التقديم تأكد من:</h4>
+          <ul>
+            <li>صلاحية جواز السفر لا تقل عن 6 أشهر</li>
+            <li>وضوح صورة الجواز والصورة الشخصية</li>
+            <li>إتمام التحويل عبر شام كاش قبل الإرسال</li>
+            <li>صحة رقم الهاتف والبريد الإلكتروني للتواصل</li>
+          </ul>
+        </div>
+        <div class="side-card">
+          <h4>ماذا يحدث بعد الإرسال؟</h4>
+          <ul>
+            <li>ستستلم رقم طلب فوري لتتبع حالته</li>
+            <li>نسخة من طلبك تُرسل إلى بريدك الإلكتروني</li>
+            <li>فريقنا يراجع الطلب خلال 24 ساعة عمل</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<script src="../js/i18n.js"></script>
+<script src="../js/main.js"></script>
+<script>
+  const API_BASE = window.location.origin.includes('4000') ? '' : 'http://localhost:4000';
+
+  const form = document.getElementById('visaForm');
+  const errorMsg = document.getElementById('formError');
+  const successBox = document.getElementById('successBox');
+  const refNumber = document.getElementById('refNumber');
+
+  // إظهار اسم الملف المختار
+  document.querySelectorAll('.file-drop input[type=file]').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const label = inp.closest('.file-drop').querySelector('.fname');
+      label.textContent = inp.files.length ? Array.from(inp.files).map(f=>f.name).join('، ') : '';
+      if (inp.files.length) inp.closest('.file-drop').classList.remove('field-invalid');
+    });
+  });
+
+  // إزالة تمييز الخطأ فور ما المستخدم يعبّي الحقل
+  form.querySelectorAll('input, select, textarea').forEach(el=>{
+    el.addEventListener('input', ()=>{
+      const container = el.closest('.file-drop') || el.closest('.form-field');
+      if (container && String(el.value || '').trim() !== '') container.classList.remove('field-invalid');
+    });
+    el.addEventListener('change', ()=>{
+      const container = el.closest('.file-drop') || el.closest('.form-field');
+      if (container && String(el.value || '').trim() !== '') container.classList.remove('field-invalid');
+    });
+  });
+
+  // خريطة اسم الحقل بالإنجليزي → التسمية العربية المعروضة برسالة الخطأ
+  const FIELD_LABELS = {
+    fullName: 'الاسم الكامل', phone: 'رقم الهاتف', email: 'البريد الإلكتروني',
+    nationality: 'الجنسية', destinationCountry: 'الدولة المطلوبة', visaType: 'نوع الفيزا',
+    travelDate: 'تاريخ السفر', travelersCount: 'عدد المسافرين',
+    passportImage: 'صورة جواز السفر', personalPhoto: 'الصورة الشخصية',
+    transferSenderName: 'اسم صاحب عملية التحويل', transferId: 'رقم عملية التحويل',
+    transferProof: 'صورة إثبات التحويل'
+  };
+
+  function fieldContainer(el){
+    return el.closest('.file-drop') || el.closest('.form-field') || el;
+  }
+
+  function clearInvalidState(){
+    form.querySelectorAll('.field-invalid').forEach(el => el.classList.remove('field-invalid'));
+  }
+
+  function findMissingFields(){
+    const missing = [];
+    Object.keys(FIELD_LABELS).forEach(name => {
+      const el = form.elements[name];
+      if (!el) return;
+      const filled = el.type === 'file' ? (el.files && el.files.length > 0) : String(el.value || '').trim() !== '';
+      if (!filled) missing.push({ el, label: FIELD_LABELS[name] });
+    });
+    return missing;
+  }
+
+  form.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    errorMsg.style.display = 'none';
+    clearInvalidState();
+
+    const missing = findMissingFields();
+    if (missing.length){
+      missing.forEach(({el}) => fieldContainer(el).classList.add('field-invalid'));
+      errorMsg.innerHTML = 'هاي الحقول لسا ناقصة (محدّدة بالأحمر بالأسفل):<br>' +
+        missing.map(m => `• ${m.label}`).join('<br>');
+      errorMsg.style.display = 'block';
+      fieldContainer(missing[0].el).scrollIntoView({ behavior:'smooth', block:'center' });
+      return;
+    }
+
+    const submitBtn = form.querySelector('button[type=submit]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'جارٍ الإرسال...';
+
+    try{
+      const formData = new FormData(form);
+      // نقطة الاتصال بالباك اند — عدّل الرابط حسب مكان تشغيل السيرفر
+      const res = await fetch(`${API_BASE}/api/visa-requests`, { method:'POST', body: formData });
+      if(!res.ok) throw new Error('فشل الإرسال');
+      const data = await res.json();
+
+      form.style.display = 'none';
+      successBox.style.display = 'block';
+      refNumber.textContent = data.trackingNumber || '—';
+    } catch(err){
+      errorMsg.textContent = 'تعذّر إرسال الطلب. تأكد من تشغيل السيرفر (الباك اند) ثم حاول مجددًا.';
+      errorMsg.style.display = 'block';
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'إرسال الطلب';
+    }
+  });
+</script>
+</body>
+</html>
