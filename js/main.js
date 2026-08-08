@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // تسجيل زيارة الصفحة لأغراض الإحصائيات بلوحة تحكم الإدارة
-  const API_BASE = window.location.origin.includes('4000') ? '' : https://backend-1-gysi.onrender.com;
+  const API_BASE = window.location.origin.includes('4000') ? 'http://localhost:4000':' https://backend-1-gysi.onrender.com';
   fetch(`${API_BASE}/api/track-visit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
