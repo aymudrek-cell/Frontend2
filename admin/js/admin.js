@@ -1,4 +1,4 @@
-const API_BASE = window.location.origin.includes('4000') ? 'http://localhost:4000' : 'https://backend-1-gysi.onrender.com';
+const API_BASE = 'https://backend-1-gysi.onrender.com';
 const token = sessionStorage.getItem('adminToken');
 
 if (!token) {
